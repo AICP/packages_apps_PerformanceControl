@@ -33,13 +33,13 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 
 import com.brewcrewfoo.performance.R;
-import com.brewcrewfoo.performance.widget.PCWidget;
 
 import java.io.*;
 
 public class Helpers implements Constants {
 
     private static String mVoltagePath;
+    private static boolean mIsSystemApp;
 
     /**
      * Checks device for SuperUser permission
@@ -363,9 +363,11 @@ public class Helpers implements Constants {
 
     /**
      * Helper to update the app widget
+     * @note OMNI: The widget has been disabled
      * @param context
      */
     public static void updateAppWidget(Context context) {
+/*
         AppWidgetManager widgetManager = AppWidgetManager.getInstance(context);
         ComponentName widgetComponent = new ComponentName(context, PCWidget.class);
         int[] widgetIds = widgetManager.getAppWidgetIds(widgetComponent);
@@ -373,6 +375,7 @@ public class Helpers implements Constants {
         update.setAction("com.brewcrewfoo.performance.ACTION_FREQS_CHANGED");
         update.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgetIds);
         context.sendBroadcast(update);
+*/
     }
 
     /**
@@ -425,9 +428,13 @@ public class Helpers implements Constants {
 
 	public static String shExec(StringBuilder s,Context c,Boolean su){
         get_assetsScript("run", c, s.toString(),"");
-        new CMDProcessor().su.runWaitFor("busybox chmod 750 "+ c.getFilesDir()+"/run" );
+        if (isSystemApp((Activity) c)) {
+            new CMDProcessor().sh.runWaitFor("busybox chmod 750 "+ c.getFilesDir()+"/run" );
+        } else {
+            new CMDProcessor().su.runWaitFor("busybox chmod 750 "+ c.getFilesDir()+"/run" );
+        }
         CMDProcessor.CommandResult cr = null;
-        if(su)
+        if(su && !isSystemApp((Activity) c))
 		    cr=new CMDProcessor().su.runWaitFor(c.getFilesDir()+"/run");
         else
             cr=new CMDProcessor().sh.runWaitFor(c.getFilesDir()+"/run");
@@ -545,5 +552,9 @@ public class Helpers implements Constants {
         else{
             return null;
         }
+    }
+
+    public static boolean isSystemApp(Activity c) {
+        return mIsSystemApp = c.getResources().getBoolean(R.bool.config_isSystemApp);
     }
 }

@@ -29,10 +29,12 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import com.brewcrewfoo.performance.R;
 import com.brewcrewfoo.performance.fragments.*;
@@ -40,11 +42,12 @@ import com.brewcrewfoo.performance.util.ActivityThemeChangeInterface;
 import com.brewcrewfoo.performance.util.Constants;
 import com.brewcrewfoo.performance.util.Helpers;
 
-public class MainActivity extends Activity implements Constants,ActivityThemeChangeInterface {
+public class MainActivity extends Fragment implements Constants,ActivityThemeChangeInterface {
 
     SharedPreferences mPreferences;
     PagerTabStrip mPagerTabStrip;
     ViewPager mViewPager;
+    ViewGroup mRootView;
 
     private static boolean mVoltageExists;
     private boolean mIsLightTheme;
@@ -52,23 +55,31 @@ public class MainActivity extends Activity implements Constants,ActivityThemeCha
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                Bundle savedInstanceState) {
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         setTheme();
-        setContentView(R.layout.activity_main);
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.activity_main, container, false);
         mVoltageExists = Helpers.voltageFileExists();
 
-        mViewPager = (ViewPager) findViewById(R.id.viewpager);
+        mViewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
         TitleAdapter titleAdapter = new TitleAdapter(getFragmentManager());
         mViewPager.setAdapter(titleAdapter);
         mViewPager.setCurrentItem(0);
 
-        mPagerTabStrip = (PagerTabStrip) findViewById(R.id.pagerTabStrip);
+        mPagerTabStrip = (PagerTabStrip) rootView.findViewById(R.id.pagerTabStrip);
         // no background color
         //mPagerTabStrip.setBackgroundColor(getResources().getColor(R.color.pc_light_gray));
         mPagerTabStrip.setTabIndicatorColor(getResources().getColor(R.color.pc_blue));
         mPagerTabStrip.setDrawFullUnderline(false);
 
         checkForSu();
+
+        return rootView;
     }
 
     class TitleAdapter extends FragmentPagerAdapter {
@@ -88,7 +99,9 @@ public class MainActivity extends Activity implements Constants,ActivityThemeCha
 	                frags[6] = new TimeInState();
 	                frags[7] = new CPUInfo();
                     frags[8] = new DiskInfo();
-                    frags[9] = new Tools();
+                    if (!getResources().getBoolean(R.bool.config_showPerformanceOnly)) {
+                        frags[9] = new Tools();
+                    }
             	}
             	else{
 			        frags[0] = new CPUSettings();
@@ -99,7 +112,9 @@ public class MainActivity extends Activity implements Constants,ActivityThemeCha
                 	frags[5] = new TimeInState();
                 	frags[6] = new CPUInfo();
                     frags[7] = new DiskInfo();
-                    frags[8] = new Tools();
+                    if (!getResources().getBoolean(R.bool.config_showPerformanceOnly)) {
+                        frags[8] = new Tools();
+                    }
             	}
             } 
             else {
@@ -112,7 +127,9 @@ public class MainActivity extends Activity implements Constants,ActivityThemeCha
                     frags[5] = new TimeInState();
                     frags[6] = new CPUInfo();
                     frags[7] = new DiskInfo();
-                    frags[8] = new Tools();
+                    if (!getResources().getBoolean(R.bool.config_showPerformanceOnly)) {
+                        frags[8] = new Tools();
+                    }
                 }
                 else{
                     frags[0] = new CPUSettings();
@@ -122,7 +139,9 @@ public class MainActivity extends Activity implements Constants,ActivityThemeCha
                     frags[4] = new TimeInState();
                     frags[5] = new CPUInfo();
                     frags[6] = new DiskInfo();
-                    frags[7] = new Tools();
+                    if (!getResources().getBoolean(R.bool.config_showPerformanceOnly)) {
+                        frags[7] = new Tools();
+                    }
                 }
             }
         }
@@ -146,22 +165,26 @@ public class MainActivity extends Activity implements Constants,ActivityThemeCha
     @Override
     public void onResume() {
         super.onResume();
-        if (isThemeChanged()) {
-            Helpers.restartPC(this);
-        }
+        //if (isThemeChanged()) {
+        //    Helpers.restartPC(this);
+        //}
     }
 
     /**
      * Check if root access, and prompt the user to grant PC access
      */
     private void checkForSu() {
+        if (Helpers.isSystemApp(getActivity())) {
+            return;
+        }
+
         // If this is the first launch of the application. Check for root.
         boolean firstrun = mPreferences.getBoolean("firstrun", true);
         // Continue to bug the user that options will not work.
         boolean rootWasCanceled = mPreferences.getBoolean("rootcanceled", false);
 
         // Don't bother AOKP users ;)
-        PackageManager pm = getPackageManager();
+        PackageManager pm = getActivity().getPackageManager();
         boolean rcInstalled = false;
         try {
             pm.getPackageInfo("com.aokp.romcontrol",PackageManager.GET_ACTIVITIES);
@@ -191,11 +214,11 @@ public class MainActivity extends Activity implements Constants,ActivityThemeCha
     private void launchFirstRunDialog() {
         String title = getString(R.string.first_run_title);
         final String failedTitle = getString(R.string.su_failed_title);
-        LayoutInflater factory = LayoutInflater.from(this);
+        LayoutInflater factory = LayoutInflater.from(getActivity());
         final View firstRunDialog = factory.inflate(R.layout.su_dialog, null);
         TextView tv = (TextView) firstRunDialog.findViewById(R.id.message);
         tv.setText(R.string.first_run_message);
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(getActivity())
                 .setTitle(title)
                 .setView(firstRunDialog)
                 .setNegativeButton("Cancel",
@@ -241,11 +264,11 @@ public class MainActivity extends Activity implements Constants,ActivityThemeCha
      * @param message Success or fail message
      */
     private void suResultDialog(String title, String message) {
-        LayoutInflater factory = LayoutInflater.from(this);
+        LayoutInflater factory = LayoutInflater.from(getActivity());
         final View suResultDialog = factory.inflate(R.layout.su_dialog, null);
         TextView tv = (TextView) suResultDialog.findViewById(R.id.message);
         tv.setText(message);
-        new AlertDialog.Builder(this).setTitle(title).setView(suResultDialog)
+        new AlertDialog.Builder(getActivity()).setTitle(title).setView(suResultDialog)
                 .setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
@@ -265,7 +288,19 @@ public class MainActivity extends Activity implements Constants,ActivityThemeCha
         String titleString[];
         if (mVoltageExists) {
         	if(Helpers.showBattery()){
-                titleString = new String[]{
+                if (getResources().getBoolean(R.bool.config_showPerformanceOnly)) {
+                        titleString = new String[]{
+                        getString(R.string.t_cpu_settings),
+                        getString(R.string.t_battery_info),
+                        getString(R.string.t_oom_settings),
+                        getString(R.string.prefcat_vm_settings),
+                        getString(R.string.t_volt_settings),
+                        getString(R.string.t_adv_settings),
+                        getString(R.string.t_time_in_state),
+                        getString(R.string.t_cpu_info),
+                        getString(R.string.t_disk_info)};
+                } else {
+                    titleString = new String[]{
                         getString(R.string.t_cpu_settings),
                         getString(R.string.t_battery_info),
                         getString(R.string.t_oom_settings),
@@ -277,7 +312,19 @@ public class MainActivity extends Activity implements Constants,ActivityThemeCha
                         getString(R.string.t_disk_info),
                         getString(R.string.t_tools)};
                 }
-                else{
+            }
+            else{
+                if (getResources().getBoolean(R.bool.config_showPerformanceOnly)) {
+                    titleString = new String[]{
+                            getString(R.string.t_cpu_settings),
+                            getString(R.string.t_oom_settings),
+                            getString(R.string.prefcat_vm_settings),
+                            getString(R.string.t_volt_settings),
+                            getString(R.string.t_adv_settings),
+                            getString(R.string.t_time_in_state),
+                            getString(R.string.t_cpu_info),
+                            getString(R.string.t_disk_info)};
+                } else {
                     titleString = new String[]{
                             getString(R.string.t_cpu_settings),
                             getString(R.string.t_oom_settings),
@@ -289,30 +336,54 @@ public class MainActivity extends Activity implements Constants,ActivityThemeCha
                             getString(R.string.t_disk_info),
                             getString(R.string.t_tools)};
                 }
+            }
         } 
         else {
         	if(Helpers.showBattery()){
-                titleString = new String[]{
-                        getString(R.string.t_cpu_settings),
-                        getString(R.string.t_battery_info),
-                        getString(R.string.t_oom_settings),
-                        getString(R.string.prefcat_vm_settings),
-                        getString(R.string.t_adv_settings),
-                        getString(R.string.t_time_in_state),
-                        getString(R.string.t_cpu_info),
-                        getString(R.string.t_disk_info),
-                        getString(R.string.t_tools)};
+                if (getResources().getBoolean(R.bool.config_showPerformanceOnly)) {
+                    titleString = new String[]{
+                            getString(R.string.t_cpu_settings),
+                            getString(R.string.t_battery_info),
+                            getString(R.string.t_oom_settings),
+                            getString(R.string.prefcat_vm_settings),
+                            getString(R.string.t_adv_settings),
+                            getString(R.string.t_time_in_state),
+                            getString(R.string.t_cpu_info),
+                            getString(R.string.t_disk_info)};
+                } else {
+                    titleString = new String[]{
+                            getString(R.string.t_cpu_settings),
+                            getString(R.string.t_battery_info),
+                            getString(R.string.t_oom_settings),
+                            getString(R.string.prefcat_vm_settings),
+                            getString(R.string.t_adv_settings),
+                            getString(R.string.t_time_in_state),
+                            getString(R.string.t_cpu_info),
+                            getString(R.string.t_disk_info),
+                            getString(R.string.t_tools)};
+                }
             }
         	else{
-                titleString = new String[]{
-                        getString(R.string.t_cpu_settings),
-                        getString(R.string.t_oom_settings),
-                        getString(R.string.prefcat_vm_settings),
-                        getString(R.string.t_adv_settings),
-                        getString(R.string.t_time_in_state),
-                        getString(R.string.t_cpu_info),
-                        getString(R.string.t_disk_info),
-                        getString(R.string.t_tools)};
+                if (getResources().getBoolean(R.bool.config_showPerformanceOnly)) {
+                    titleString = new String[]{
+                            getString(R.string.t_cpu_settings),
+                            getString(R.string.t_oom_settings),
+                            getString(R.string.prefcat_vm_settings),
+                            getString(R.string.t_adv_settings),
+                            getString(R.string.t_time_in_state),
+                            getString(R.string.t_cpu_info),
+                            getString(R.string.t_disk_info)};
+                } else {
+                    titleString = new String[]{
+                            getString(R.string.t_cpu_settings),
+                            getString(R.string.t_oom_settings),
+                            getString(R.string.prefcat_vm_settings),
+                            getString(R.string.t_adv_settings),
+                            getString(R.string.t_time_in_state),
+                            getString(R.string.t_cpu_info),
+                            getString(R.string.t_disk_info),
+                            getString(R.string.t_tools)};
+                }
             }
         }
         return titleString;
@@ -328,7 +399,7 @@ public class MainActivity extends Activity implements Constants,ActivityThemeCha
     public void setTheme() {
         final boolean is_light_theme = mPreferences.getBoolean(PREF_USE_LIGHT_THEME, false);
         mIsLightTheme = mPreferences.getBoolean(PREF_USE_LIGHT_THEME, false);
-        setTheme(is_light_theme ? R.style.Theme_Light : R.style.Theme_Dark);
+        //setTheme(is_light_theme ? R.style.Theme_Light : R.style.Theme_Dark);
     }
 }
 
