@@ -63,9 +63,10 @@ public class MainActivity extends Activity implements Constants,ActivityThemeCha
         mViewPager.setCurrentItem(0);
 
         mPagerTabStrip = (PagerTabStrip) findViewById(R.id.pagerTabStrip);
-        mPagerTabStrip.setBackgroundColor(getResources().getColor(R.color.pc_light_gray));
+        // no background color
+        //mPagerTabStrip.setBackgroundColor(getResources().getColor(R.color.pc_light_gray));
         mPagerTabStrip.setTabIndicatorColor(getResources().getColor(R.color.pc_blue));
-        mPagerTabStrip.setDrawFullUnderline(true);
+        mPagerTabStrip.setDrawFullUnderline(false);
 
         checkForSu();
     }
