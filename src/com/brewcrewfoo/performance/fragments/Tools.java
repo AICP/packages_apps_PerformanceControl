@@ -289,11 +289,7 @@ public class Tools extends PreferenceFragment implements OnSharedPreferenceChang
     private class FixPermissionsOperation extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
-            if (Helpers.isSystemApp(getActivity())) {
-                new CMDProcessor().sh.runWaitFor(context.getFilesDir()+"/fix_permissions");
-            } else {
-                new CMDProcessor().su.runWaitFor(context.getFilesDir()+"/fix_permissions");
-            }
+            new CMDProcessor().su.runWaitFor(context.getFilesDir()+"/fix_permissions");
             return null;
         }
 
@@ -311,11 +307,7 @@ public class Tools extends PreferenceFragment implements OnSharedPreferenceChang
             tip=1;
             progressDialog = ProgressDialog.show(context, getString(R.string.fix_perms_title),getString(R.string.wait));
             Helpers.get_assetsScript("fix_permissions",context,"#","");
-            if (Helpers.isSystemApp(getActivity())) {
-                new CMDProcessor().sh.runWaitFor("busybox chmod 750 "+context.getFilesDir()+"/fix_permissions" );
-            } else {
-                new CMDProcessor().su.runWaitFor("busybox chmod 750 "+context.getFilesDir()+"/fix_permissions" );
-            }
+            new CMDProcessor().su.runWaitFor("busybox chmod 750 "+context.getFilesDir()+"/fix_permissions" );
         }
 
         @Override
@@ -380,11 +372,7 @@ public class Tools extends PreferenceFragment implements OnSharedPreferenceChang
     private class DBoptimOperation extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
-            if (Helpers.isSystemApp(getActivity())) {
-                new CMDProcessor().sh.runWaitFor(context.getFilesDir()+"/sql_optimize");
-            } else {
-                new CMDProcessor().su.runWaitFor(context.getFilesDir()+"/sql_optimize");
-            }
+            new CMDProcessor().su.runWaitFor(context.getFilesDir()+"/sql_optimize");
             return null;
         }
 
@@ -404,11 +392,7 @@ public class Tools extends PreferenceFragment implements OnSharedPreferenceChang
             mPreferences.edit().putLong(PREF_OPTIM_DB,System.currentTimeMillis()).commit();
             Helpers.get_assetsBinary("sqlite3",context);
             Helpers.get_assetsScript("sql_optimize",context,"busybox chmod 750 "+context.getFilesDir()+"/sqlite3","");
-            if (Helpers.isSystemApp(getActivity())) {
-                new CMDProcessor().sh.runWaitFor("busybox chmod 750 "+context.getFilesDir()+"/sql_optimize" );
-            } else {
-                new CMDProcessor().su.runWaitFor("busybox chmod 750 "+context.getFilesDir()+"/sql_optimize" );
-            }
+            new CMDProcessor().su.runWaitFor("busybox chmod 750 "+context.getFilesDir()+"/sql_optimize" );
         }
 
         @Override
