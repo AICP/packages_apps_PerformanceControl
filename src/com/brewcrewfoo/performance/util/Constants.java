@@ -54,6 +54,12 @@ public interface Constants {
     public static final String GOV_NAME = "gov_name";
     public static final String GOV_SETTINGS_PATH = "/sys/devices/system/cpu/cpufreq/";
 
+    // GPU
+    public static final String MAX_GPU_FREQ_PATH = "/sys/class/kgsl/kgsl-3d0/max_gpuclk";
+    public static final String STEPS_GPU_PATH = "/sys/class/kgsl/kgsl-3d0/gpu_available_frequencies";
+    public static final String GPU_SOB = "gpu_sob";
+    public static final String PREF_MAX_GPU = "pref_max_gpu";
+
     // CPU info
     public static String KERNEL_INFO_PATH = "/proc/version";
     public static String CPU_INFO_PATH = "/proc/cpuinfo";

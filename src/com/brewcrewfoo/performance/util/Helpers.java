@@ -343,7 +343,16 @@ public class Helpers implements Constants {
      * @return tagged and converted String
      */
     public static String toMHz(String mhzString) {
-        return new StringBuilder().append(Integer.parseInt(mhzString) / 1000).append(" MHz").toString();
+        return new StringBuilder().append(" ").append(Integer.parseInt(mhzString) / 1000).append(" MHz").toString();
+    }
+
+    /**
+     * Convert to GPU MHz and append a tag
+     * @param mhzString
+     * @return tagged and converted String
+     */
+    public static String toGpuMHz(String mhzString) {
+        return new StringBuilder().append(" ").append(Integer.parseInt(mhzString) / 1000000).append(" MHz").toString();
     }
 
     /**

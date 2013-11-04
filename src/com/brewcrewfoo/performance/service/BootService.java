@@ -98,6 +98,13 @@ public class BootService extends Service implements Constants {
                         sb.append("busybox echo ").append(io).append(" > ").append(IO_SCHEDULER_PATH[i]).append(";\n");
                 }
             }
+            if (preferences.getBoolean(GPU_SOB, false)) {
+                final String max = preferences.getString(PREF_MAX_GPU, Helpers.readOneLine(MAX_GPU_FREQ_PATH));
+
+                if (new File(MAX_GPU_FREQ_PATH).exists()) {
+                    sb.append("busybox echo ").append(max).append(" > ").append(MAX_GPU_FREQ_PATH).append(";\n");
+                }
+            }
             if (preferences.getBoolean(VOLTAGE_SOB, false)) {
                 if(Helpers.voltageFileExists()){
                     final List<Voltage> volts = VoltageControlSettings.getVolts(preferences);

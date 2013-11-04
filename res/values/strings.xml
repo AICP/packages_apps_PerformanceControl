@@ -32,6 +32,7 @@ Copyright (C) 2012  James Roberts
     <string name="tab_tools">Tools</string>
     <!-- Titles -->
     <string name="t_cpu_settings">CPU SETTINGS</string>
+    <string name="t_gpu_settings">GPU SETTINGS</string>
     <string name="t_battery_info">BATTERY</string>
     <string name="t_oom_settings">MEMORY SETTINGS</string>
     <string name="t_volt_settings">VOLTAGE SETTINGS</string>
@@ -49,6 +50,7 @@ Copyright (C) 2012  James Roberts
     <string name="mt_restore">Restore</string>
     <string name="mt_plus25">Increase by 25 mV</string>
     <string name="mt_minus25">Decrease by 25 mV</string>
+
     <!-- CPU settings -->
     <string name="current_speed">Current Speed</string>
     <string name="current_max">Current max:</string>
@@ -63,6 +65,9 @@ Copyright (C) 2012  James Roberts
     <string name="other_settings_header">Other settings</string>
     <string name="core_offline">Offline</string>
     <string name="core">Core</string>
+
+    <!-- GPU settings -->
+    <string name="gpu_info">GPU INFORMATION</string>
 
     <!-- Other settings -->
     <string name="prefcat_free_memory">FREE MEMORY</string>
@@ -89,7 +94,7 @@ Copyright (C) 2012  James Roberts
     <string name="fast_charge_notification_title">Fast Charge is ON!</string>
     <string name="fast_charge_notification_message">Phone is in charge-only mode!</string>
 
-<!-- minfree -->
+   <!-- minfree -->
    <string name="prefcat_oom">MINFREE TASKKILLER</string>
    <string name="title_foreground_app">Foreground Applications</string>
    <string name="title_visible_app">Visible Applications</string>
