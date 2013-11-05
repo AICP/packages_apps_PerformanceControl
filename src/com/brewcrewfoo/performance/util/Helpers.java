@@ -321,6 +321,22 @@ public class Helpers implements Constants {
     }
 
     /**
+     * Check if any GPU OC file tables exist
+     * <p/>
+     * If false is returned, there was no tables found and none will be used.
+     *
+     * @return true/false if GPU OC table exists
+     */
+    public static boolean gpuOcFileExists() {
+        if (new File(MAX_GPU_FREQ_PATH).exists()) {
+            return true;
+        } else if (new File(STEPS_GPU_PATH).exists()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Sets the voltage file to be used by the rest of the app elsewhere.
      * @param voltageFile
      */
