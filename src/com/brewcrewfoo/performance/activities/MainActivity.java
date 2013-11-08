@@ -79,34 +79,34 @@ public class MainActivity extends Activity implements Constants,ActivityThemeCha
 
         public TitleAdapter(FragmentManager fm) {
             super(fm);
-            if (mVoltageExists || mGpuOcExists) {
+            if (mVoltageExists && mGpuOcExists) {
             	if(Helpers.showBattery()){
-	                frags[0] = new CPUSettings();
-	                frags[1] = new GPUSettings();
-		            frags[2] = new BatteryInfo();
-		            frags[3] = new OOMSettings();
+	            frags[0] = new CPUSettings();
+	            frags[1] = new GPUSettings();
+		    frags[2] = new BatteryInfo();
+		    frags[3] = new OOMSettings();
                     frags[4] = new VM();
-	                frags[5] = new VoltageControlSettings();
-	                frags[6] = new Advanced();
-	                frags[7] = new TimeInState();
-	                frags[8] = new CPUInfo();
+	            frags[5] = new VoltageControlSettings();
+	            frags[6] = new Advanced();
+	            frags[7] = new TimeInState();
+	            frags[8] = new CPUInfo();
                     frags[9] = new DiskInfo();
                     frags[10] = new Tools();
             	}
             	else{
-			        frags[0] = new CPUSettings();
-	                frags[1] = new GPUSettings();
-	        	    frags[2] = new OOMSettings();
+		    frags[0] = new CPUSettings();
+	            frags[1] = new GPUSettings();
+	            frags[2] = new OOMSettings();
                     frags[3] = new VM();
-                	frags[4] = new VoltageControlSettings();
-                	frags[5] = new Advanced();
-                	frags[6] = new TimeInState();
-                	frags[7] = new CPUInfo();
+                    frags[4] = new VoltageControlSettings();
+                    frags[5] = new Advanced();
+                    frags[6] = new TimeInState();
+                    frags[7] = new CPUInfo();
                     frags[8] = new DiskInfo();
                     frags[9] = new Tools();
             	}
             } 
-            else {
+            else if (!mVoltageExists && !mGpuOcExists) {
                 if(Helpers.showBattery()){
                     frags[0] = new CPUSettings();
                     frags[1] = new BatteryInfo();
@@ -128,6 +128,54 @@ public class MainActivity extends Activity implements Constants,ActivityThemeCha
                     frags[6] = new DiskInfo();
                     frags[7] = new Tools();
                 }
+            } else if (mVoltageExists && !mGpuOcExists) {
+            	if(Helpers.showBattery()){
+	            frags[0] = new CPUSettings();
+		    frags[1] = new BatteryInfo();
+		    frags[2] = new OOMSettings();
+                    frags[3] = new VM();
+	            frags[4] = new VoltageControlSettings();
+	            frags[5] = new Advanced();
+	            frags[6] = new TimeInState();
+	            frags[7] = new CPUInfo();
+                    frags[8] = new DiskInfo();
+                    frags[9] = new Tools();
+            	}
+            	else{
+		    frags[0] = new CPUSettings();
+	            frags[1] = new OOMSettings();
+                    frags[2] = new VM();
+                    frags[3] = new VoltageControlSettings();
+                    frags[4] = new Advanced();
+                    frags[5] = new TimeInState();
+                    frags[6] = new CPUInfo();
+                    frags[7] = new DiskInfo();
+                    frags[8] = new Tools();
+            	}
+            } else {
+            	if(Helpers.showBattery()){
+	            frags[0] = new CPUSettings();
+	            frags[1] = new GPUSettings();
+		    frags[2] = new BatteryInfo();
+		    frags[3] = new OOMSettings();
+                    frags[4] = new VM();
+	            frags[5] = new Advanced();
+	            frags[6] = new TimeInState();
+	            frags[7] = new CPUInfo();
+                    frags[8] = new DiskInfo();
+                    frags[9] = new Tools();
+            	}
+            	else{
+		    frags[0] = new CPUSettings();
+	            frags[1] = new GPUSettings();
+	            frags[2] = new OOMSettings();
+                    frags[3] = new VM();
+                    frags[4] = new Advanced();
+                    frags[5] = new TimeInState();
+                    frags[6] = new CPUInfo();
+                    frags[7] = new DiskInfo();
+                    frags[8] = new Tools();
+            	}
             }
         }
 
@@ -267,8 +315,8 @@ public class MainActivity extends Activity implements Constants,ActivityThemeCha
      */
     private String[] getTitles() {
         String titleString[];
-        if (mVoltageExists || mGpuOcExists) {
-        	if(Helpers.showBattery()){
+        if (mVoltageExists && mGpuOcExists) {
+            if(Helpers.showBattery()){
                 titleString = new String[]{
                         getString(R.string.t_cpu_settings),
                         getString(R.string.t_gpu_settings),
@@ -296,8 +344,8 @@ public class MainActivity extends Activity implements Constants,ActivityThemeCha
                             getString(R.string.t_tools)};
                 }
         } 
-        else {
-        	if(Helpers.showBattery()){
+        else if (!mVoltageExists && !mGpuOcExists) {
+            if(Helpers.showBattery()){
                 titleString = new String[]{
                         getString(R.string.t_cpu_settings),
                         getString(R.string.t_battery_info),
@@ -312,6 +360,59 @@ public class MainActivity extends Activity implements Constants,ActivityThemeCha
         	else{
                 titleString = new String[]{
                         getString(R.string.t_cpu_settings),
+                        getString(R.string.t_oom_settings),
+                        getString(R.string.prefcat_vm_settings),
+                        getString(R.string.t_adv_settings),
+                        getString(R.string.t_time_in_state),
+                        getString(R.string.t_cpu_info),
+                        getString(R.string.t_disk_info),
+                        getString(R.string.t_tools)};
+            }
+        } else if (mVoltageExists && !mGpuOcExists) {
+            if(Helpers.showBattery()){
+                titleString = new String[]{
+                        getString(R.string.t_cpu_settings),
+                        getString(R.string.t_battery_info),
+                        getString(R.string.t_oom_settings),
+                        getString(R.string.prefcat_vm_settings),
+                        getString(R.string.t_volt_settings),
+                        getString(R.string.t_adv_settings),
+                        getString(R.string.t_time_in_state),
+                        getString(R.string.t_cpu_info),
+                        getString(R.string.t_disk_info),
+                        getString(R.string.t_tools)};
+            }
+        	else{
+                titleString = new String[]{
+                        getString(R.string.t_cpu_settings),
+                        getString(R.string.t_oom_settings),
+                        getString(R.string.prefcat_vm_settings),
+                        getString(R.string.t_volt_settings),
+                        getString(R.string.t_adv_settings),
+                        getString(R.string.t_time_in_state),
+                        getString(R.string.t_cpu_info),
+                        getString(R.string.t_disk_info),
+                        getString(R.string.t_tools)};
+            }
+        } else {
+            if(Helpers.showBattery()){
+                titleString = new String[]{
+                        getString(R.string.t_cpu_settings),
+                        getString(R.string.t_gpu_settings),
+                        getString(R.string.t_battery_info),
+                        getString(R.string.t_oom_settings),
+                        getString(R.string.prefcat_vm_settings),
+                        getString(R.string.t_volt_settings),
+                        getString(R.string.t_adv_settings),
+                        getString(R.string.t_time_in_state),
+                        getString(R.string.t_cpu_info),
+                        getString(R.string.t_disk_info),
+                        getString(R.string.t_tools)};
+            }
+        	else{
+                titleString = new String[]{
+                        getString(R.string.t_cpu_settings),
+                        getString(R.string.t_gpu_settings),
                         getString(R.string.t_oom_settings),
                         getString(R.string.prefcat_vm_settings),
                         getString(R.string.t_adv_settings),
