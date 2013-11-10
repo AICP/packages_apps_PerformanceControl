@@ -55,6 +55,7 @@ public class GPUSettings extends Fragment implements SeekBar.OnSeekBarChangeList
     private ListView mCpuInfoList;
     private List<String> mCpuInfoListData;
     private LayoutInflater mInflater;
+    private static final int NEW_MENU_ID=Menu.FIRST+1;
 
     public class CpuInfoListAdapter extends ArrayAdapter<String> {
 
@@ -76,6 +77,7 @@ public class GPUSettings extends Fragment implements SeekBar.OnSeekBarChangeList
         super.onCreate(savedInstanceState);
         context=getActivity();
         mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -125,6 +127,24 @@ public class GPUSettings extends Fragment implements SeekBar.OnSeekBarChangeList
         });
 
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.gpu_settings_menu, menu);
+        Helpers.addItems2Menu(menu,NEW_MENU_ID,getString(R.string.menu_tab),(ViewPager) getView().getParent());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Helpers.removeCurItem(item,NEW_MENU_ID,(ViewPager) getView().getParent());
+        switch(item.getItemId()){
+            case R.id.app_settings:
+                Intent intent = new Intent(context, PCSettings.class);
+                startActivity(intent);
+                break;
+        }
+        return true;
     }
 
     @Override
