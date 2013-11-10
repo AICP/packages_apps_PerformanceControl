@@ -402,7 +402,6 @@ public class MainActivity extends Activity implements Constants,ActivityThemeCha
                         getString(R.string.t_battery_info),
                         getString(R.string.t_oom_settings),
                         getString(R.string.prefcat_vm_settings),
-                        getString(R.string.t_volt_settings),
                         getString(R.string.t_adv_settings),
                         getString(R.string.t_time_in_state),
                         getString(R.string.t_cpu_info),
